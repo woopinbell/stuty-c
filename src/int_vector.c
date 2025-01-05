@@ -1,5 +1,38 @@
 #include "int_vector.h"
 #include <stdlib.h> /* realloc, free */
+#include <limits.h> /* SIZE_MAX */
+
+enum int_vector_status int_vector_push(struct int_vector *v, int value) {
+    size_t new_capacity;
+    void *new_data;
+
+    if (v == NULL)
+        return INT_VECTOR_ERR_NULL_ARG;
+
+    if (v->size < v->capacity) {
+        // 여유 공간이 있으면 확장 없이 바로 삽입
+        v->data[v->size] = value;
+        v->size += 1;
+        return INT_VECTOR_OK;
+    }
+
+    new_capacity = (v->capacity == 0) ? 4 : v->capacity * 2;
+
+    // 원소 개수 오버플로: capacity 자체가 size_t 표현 범위를 넘는 경우
+    if (v->capacity != 0 && new_capacity < v->capacity)
+        return INT_VECTOR_ERR_OVERFLOW;
+    
+    new_data = v->allocator.alloc(v->allocator.ctx, v->data, new_capacity * sizeof(int));
+    if (new_data == NULL)
+        return INT_VECTOR_ERR_ALLOC;
+
+    v->data = new_data;
+    v->capacity = new_capacity;
+    v->data[v->size] = value;
+    v->size += 1;
+
+    return INT_VECTOR_OK;
+}
 
 // 표준 realloc/free 시맨틱을 alloc_fn 계약에 맞게 감싼 기본 구현.
 // ctx는 사용하지 않으므로 (void)로 무시한다.
