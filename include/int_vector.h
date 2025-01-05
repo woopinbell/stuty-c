@@ -28,6 +28,9 @@ enum int_vector_status {
     INT_VECTOR_ERR_ALLOC    = -4
 };
 
+enum int_vector_status int_vector_init(struct int_vector *v, const struct int_vector_allocator *allocator);
+void int_vector_destroy(struct int_vector *v);
+
 extern const struct int_vector_allocator int_vector_default_allocator;
 
 #endif // INT_VECTOR_H
