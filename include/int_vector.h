@@ -28,4 +28,6 @@ enum int_vector_status {
     INT_VECTOR_ERR_ALLOC    = -4
 };
 
+extern const struct int_vector_allocator int_vector_default_allocator;
+
 #endif // INT_VECTOR_H
