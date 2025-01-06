@@ -30,7 +30,7 @@ enum int_vector_status {
 
 enum int_vector_status int_vector_init(struct int_vector *v, const struct int_vector_allocator *allocator);
 enum int_vector_status int_vector_push(struct int_vector *v, int value);
-enum int_vector_status int_vector_get(struct int_vector *v, size_t index, int *out_value);
+enum int_vector_status int_vector_get(const struct int_vector *v, size_t index, int *out_value);
 void int_vector_destroy(struct int_vector *v);
 
 extern const struct int_vector_allocator int_vector_default_allocator;
