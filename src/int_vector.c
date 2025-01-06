@@ -2,12 +2,24 @@
 #include <stdlib.h> /* realloc, free */
 #include <limits.h> /* SIZE_MAX */
 
+// 불변식 위반 여부만 확인하는 헬퍼
+static int int_vector_state_is_valid(const struct int_vector *v) {
+    if (v->capacity == 0 && v->data != NULL)
+        return 0;
+    if (v->capacity > 0 && v->data == NULL)
+        return 0;
+    return v->size <= v->capacity;
+}
+
 enum int_vector_status int_vector_push(struct int_vector *v, int value) {
     size_t new_capacity;
     void *new_data;
 
     if (v == NULL)
         return INT_VECTOR_ERR_NULL_ARG;
+
+    if (!int_vector_state_is_valid(v))
+        return INT_VECTOR_ERR_RANGE;
 
     if (v->size < v->capacity) {
         // 여유 공간이 있으면 확장 없이 바로 삽입
@@ -35,8 +47,11 @@ enum int_vector_status int_vector_push(struct int_vector *v, int value) {
 }
 
 enum int_vector_status int_vector_get(const struct int_vector *v, size_t index, int *out_value) {
-    if (v == NULL)
+    if (v == NULL || out_value == NULL)
         return INT_VECTOR_ERR_NULL_ARG;
+
+    if (!int_vector_state_is_valid(v))
+        return INT_VECTOR_ERR_RANGE;
 
     if (index >= v->size)
         return INT_VECTOR_ERR_RANGE;
