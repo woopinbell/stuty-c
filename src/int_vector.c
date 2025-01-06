@@ -34,6 +34,17 @@ enum int_vector_status int_vector_push(struct int_vector *v, int value) {
     return INT_VECTOR_OK;
 }
 
+enum int_vector_status int_vector_get(const struct int_vector *v, size_t index, int *out_value) {
+    if (v == NULL)
+        return INT_VECTOR_ERR_NULL_ARG;
+
+    if (index >= v->size)
+        return INT_VECTOR_ERR_RANGE;
+
+    *out_value = v->data[index];
+    return INT_VECTOR_OK;
+}
+
 // 표준 realloc/free 시맨틱을 alloc_fn 계약에 맞게 감싼 기본 구현.
 // ctx는 사용하지 않으므로 (void)로 무시한다.
 static void *int_vector_default_alloc(void *ctx, void *ptr, size_t size) {
